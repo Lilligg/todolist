@@ -11,13 +11,13 @@ const root = createRoot(container);
 
 root.render(
     <StrictMode>
-        <BrowserRouter>
-            <GoBackHome/>
-            <Routes>
-                <Route path="/" element={ <FirstPages />} />
-                <Route path="/board/:boardId" element={<AddBoard/>} />
-            </Routes>
-        </BrowserRouter>
-    </StrictMode>,
+            <BrowserRouter>
+                <GoBackHome/>
+                <Routes>
+                    <Route path="/" element={ <FirstPages />} />
+                    <Route path="/board/:boardId" element={<AddBoard/>} />
+                </Routes>
+            </BrowserRouter>
+    </StrictMode>
 );
 

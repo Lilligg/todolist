@@ -1,0 +1,15 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    overflow-x: hidden; /* Предотвращает горизонтальную полосу прокрутки */
+}
+
+body {
+    background-image: url("src/assets/doski_zabor_chb_185928_3840x2400.jpg");
+    background-repeat: no-repeat;   /* Предотвращает повторение изображения */
+    background-size: cover;
+    background-position: center center;
+
+}

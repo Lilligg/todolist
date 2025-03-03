@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Button,
     TextField,
@@ -7,11 +7,23 @@ import {
 
 import Board from "./Board";
 import {v4 as uuidv4} from "uuid";
+import {useParams} from "react-router-dom";
+
 
 const AddBoard = () => {
+    const { boardId } = useParams();
+
     const [listName, setListName] = useState("");
-    const [arrayList, setArrayList] = useState([]);
+    const [arrayList, setArrayList] = useState(() => {
+        const savedBoards = localStorage.getItem(`list_${boardId}`);
+        return savedBoards ? JSON.parse(savedBoards) : [];
+    });
+
     const [showMore, setShowMore] = useState(false);
+
+    useEffect(() => {
+        localStorage.setItem(`list_${boardId}`, JSON.stringify(arrayList));
+    }, [arrayList, boardId]);
 
     const switchShowMore = () => {
         setShowMore(!showMore);
@@ -112,7 +124,7 @@ const AddBoard = () => {
                         paddingBottom: 2,
                     }}>
                             <h2>{item.name}</h2>
-                            <Board key={item.id}/>
+                            <Board key={item.id} listID = {item.id}/>
                     </Box>
                 ))}
             </Box>

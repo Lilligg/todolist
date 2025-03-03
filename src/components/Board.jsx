@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import {
     TextField,
     List,
@@ -12,10 +12,21 @@ import {
 } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { v4 as uuidv4 } from 'uuid';
+import {useParams} from "react-router-dom";
 
-const Board = () => {
+const Board = ({listID}) => {
+    const { boardId } = useParams();
+
     const [element, setElement] = useState("");
-    const [arrayElements, setArrayElements] = useState([]);
+    const [arrayElements, setArrayElements] = useState(() => {
+        const savedBoards = localStorage.getItem(`elements_${boardId}${listID}`);
+        return savedBoards ? JSON.parse(savedBoards) : [];
+    });
+
+    useEffect(() => {
+        localStorage.setItem(`elements_${boardId}${listID}`, JSON.stringify(arrayElements));
+    }, [arrayElements, boardId]);
+
 
     const deleteElement = (id) => {
         setArrayElements(arrayElements.filter(item => item.id !== id));

@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useEffect} from "react";
 import {
     Button,
     Box,
@@ -16,7 +16,15 @@ const FirstPages = () => {
 
     const [showMore, setShowMore] = useState(false);
     const [nameBoard, setNameBoard] = useState("");
-    const [arrayBoard, setArrayBoard] = useState([]);
+    const [arrayBoard, setArrayBoard] = useState(() => {
+        const savedBoards = localStorage.getItem('boards');
+        return savedBoards ? JSON.parse(savedBoards) : [];
+    });
+
+    useEffect(() => {
+            localStorage.setItem('boards', JSON.stringify(arrayBoard));
+    }, [arrayBoard]);
+
 
     const switchShowMore = () => {
         setShowMore(!showMore);

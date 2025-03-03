@@ -14,12 +14,17 @@ const AddBoard = () => {
     const { boardId } = useParams();
 
     const [listName, setListName] = useState("");
-    const [arrayList, setArrayList] = useState(() => {
-        const savedBoards = localStorage.getItem(`list_${boardId}`);
-        return savedBoards ? JSON.parse(savedBoards) : [];
-    });
-
+    const [arrayList, setArrayList] = useState([])
     const [showMore, setShowMore] = useState(false);
+
+    const savedList = localStorage.getItem(`list_${boardId}`);
+
+    useEffect(() => {
+        if(savedList) {
+            const parsedBoards = JSON.parse(savedList);
+            setArrayList(parsedBoards);
+        }
+    }, []);
 
     useEffect(() => {
         localStorage.setItem(`list_${boardId}`, JSON.stringify(arrayList));
@@ -111,7 +116,8 @@ const AddBoard = () => {
 
             }}>
                 {arrayList.map((item) => (
-                    <Box sx={{
+                    <Box key={item.id}
+                        sx={{
                         display: 'flex',
                         justifyContent: 'center',
                         alignItems: 'center',
@@ -124,7 +130,7 @@ const AddBoard = () => {
                         paddingBottom: 2,
                     }}>
                             <h2>{item.name}</h2>
-                            <Board key={item.id} listID = {item.id}/>
+                            <Board listID = {item.id}/>
                     </Box>
                 ))}
             </Box>

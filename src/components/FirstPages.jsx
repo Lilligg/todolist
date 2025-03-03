@@ -16,10 +16,14 @@ const FirstPages = () => {
 
     const [showMore, setShowMore] = useState(false);
     const [nameBoard, setNameBoard] = useState("");
-    const [arrayBoard, setArrayBoard] = useState(() => {
-        const savedBoards = localStorage.getItem('boards');
-        return savedBoards ? JSON.parse(savedBoards) : [];
-    });
+    const [arrayBoard, setArrayBoard] = useState([])
+
+    const savedBoards = localStorage.getItem('boards');
+
+    useEffect(() => {
+        const parsedBoards = JSON.parse(savedBoards);
+        setArrayBoard(parsedBoards);
+    }, []);
 
     useEffect(() => {
             localStorage.setItem('boards', JSON.stringify(arrayBoard));

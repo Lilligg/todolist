@@ -18,10 +18,16 @@ const Board = ({listID}) => {
     const { boardId } = useParams();
 
     const [element, setElement] = useState("");
-    const [arrayElements, setArrayElements] = useState(() => {
-        const savedBoards = localStorage.getItem(`elements_${boardId}${listID}`);
-        return savedBoards ? JSON.parse(savedBoards) : [];
-    });
+    const [arrayElements, setArrayElements] = useState([])
+
+    const savedElements = localStorage.getItem(`elements_${boardId}${listID}`);
+
+    useEffect(() => {
+        if(savedElements) {
+            const parsedBoards = JSON.parse(savedElements);
+            setArrayElements(parsedBoards);
+        }
+    }, []);
 
     useEffect(() => {
         localStorage.setItem(`elements_${boardId}${listID}`, JSON.stringify(arrayElements));
@@ -65,8 +71,8 @@ const Board = ({listID}) => {
                 width: '100%',
             }}>
                 {arrayElements.map((item) => (
-                    <>
-                        <ListItem key={item.id}>
+                    <Box key={item.id}>
+                        <ListItem>
 
                             <ListItemIcon>
                                 <Checkbox
@@ -85,7 +91,7 @@ const Board = ({listID}) => {
                             </ListItemSecondaryAction>
                         </ListItem>
                         <Divider />
-                    </>
+                    </Box>
                 ))}
             </List>
 

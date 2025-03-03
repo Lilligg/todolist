@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import {Link} from 'react-router-dom';
 import {v4 as uuidv4} from "uuid";
+import checkingDuplicatesAndNull from "../function/checkingDuplicatesAndNull.js";
 
 
 const FirstPages = () => {
@@ -34,19 +35,11 @@ const FirstPages = () => {
         setShowMore(!showMore);
     }
 
-    const saveBoard = () => {
-        if (nameBoard.trim() === "") {
-            alert("Введите название доски");
-            return;
-        }
-        const isNameExists = arrayBoard.some((array) => array.name.toLowerCase().trim() === nameBoard.toLowerCase().trim());
-        if (isNameExists) {
-            alert("Уже есть доска с таким названием");
-            return;
-        }
 
-        console.log(nameBoard, arrayBoard);
-        console.log(arrayBoard.includes(nameBoard));
+    const saveBoard = () => {
+        if(!checkingDuplicatesAndNull(nameBoard, arrayBoard)){
+            return;
+        }
         setArrayBoard([...arrayBoard, { id: uuidv4(), name: nameBoard }]);
         setNameBoard("");
         setShowMore(false);

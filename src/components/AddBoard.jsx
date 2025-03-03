@@ -8,6 +8,7 @@ import {
 import Board from "./Board";
 import {v4 as uuidv4} from "uuid";
 import {useParams} from "react-router-dom";
+import checkingDuplicatesAndNull from "../function/checkingDuplicatesAndNull.js";
 
 
 const AddBoard = () => {
@@ -40,16 +41,9 @@ const AddBoard = () => {
     }
 
     const saveList = () => {
-        if (listName.trim() === "") {
-            alert("Введите название листа");
+        if(!checkingDuplicatesAndNull(listName, arrayList)){
             return;
         }
-        const isNameExists = arrayList.some((array) => array.name.toLowerCase().trim() === listName.toLowerCase().trim());
-        if (isNameExists) {
-            alert("Уже есть лист с таким названием");
-            return;
-        }
-
         setArrayList([...arrayList, { id: uuidv4(), name: listName}]);
         setShowMore(false);
         setListName("")

@@ -35,6 +35,18 @@ const FirstPages = () => {
     }
 
     const saveBoard = () => {
+        if (nameBoard.trim() === "") {
+            alert("Введите название доски");
+            return;
+        }
+        const isNameExists = arrayBoard.some((array) => array.name.toLowerCase().trim() === nameBoard.toLowerCase().trim());
+        if (isNameExists) {
+            alert("Уже есть доска с таким названием");
+            return;
+        }
+
+        console.log(nameBoard, arrayBoard);
+        console.log(arrayBoard.includes(nameBoard));
         setArrayBoard([...arrayBoard, { id: uuidv4(), name: nameBoard }]);
         setNameBoard("");
         setShowMore(false);
@@ -159,5 +171,4 @@ const FirstPages = () => {
         </Box>
     );
 }
-
 export default FirstPages;

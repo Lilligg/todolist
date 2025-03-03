@@ -40,6 +40,16 @@ const AddBoard = () => {
     }
 
     const saveList = () => {
+        if (listName.trim() === "") {
+            alert("Введите название листа");
+            return;
+        }
+        const isNameExists = arrayList.some((array) => array.name.toLowerCase().trim() === listName.toLowerCase().trim());
+        if (isNameExists) {
+            alert("Уже есть лист с таким названием");
+            return;
+        }
+
         setArrayList([...arrayList, { id: uuidv4(), name: listName}]);
         setShowMore(false);
         setListName("")
@@ -107,13 +117,12 @@ const AddBoard = () => {
 
             <Box sx={{
                 width: '100%',
-                height: '100vh',
+                height: '100%',
                 display: 'flex',
                 justifyContent: 'flex-start',
                 alignItems: 'flex-start',
                 flexDirection: 'row',
                 flexWrap: 'wrap',
-
             }}>
                 {arrayList.map((item) => (
                     <Box key={item.id}

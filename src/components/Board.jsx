@@ -49,7 +49,13 @@ const Board = ({listID}) => {
 
     const addList = () => {
         if (element.trim() === "") {
-            alert("Введите дело!");
+            alert("Введите название задачи!");
+            return;
+        }
+
+        const isNameExists = arrayElements.some((array) => array.text.toLowerCase().trim() === element.toLowerCase().trim());
+        if (isNameExists) {
+            alert("Уже есть задача с таким названием");
             return;
         }
 

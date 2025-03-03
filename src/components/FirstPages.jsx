@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import {Link} from 'react-router-dom';
 import {v4 as uuidv4} from "uuid";
+import checkingDuplicatesAndNull from "../function/checkingDuplicatesAndNull.js";
 
 
 const FirstPages = () => {
@@ -34,7 +35,11 @@ const FirstPages = () => {
         setShowMore(!showMore);
     }
 
+
     const saveBoard = () => {
+        if(!checkingDuplicatesAndNull(nameBoard, arrayBoard)){
+            return;
+        }
         setArrayBoard([...arrayBoard, { id: uuidv4(), name: nameBoard }]);
         setNameBoard("");
         setShowMore(false);
@@ -159,5 +164,4 @@ const FirstPages = () => {
         </Box>
     );
 }
-
 export default FirstPages;

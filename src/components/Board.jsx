@@ -13,6 +13,7 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import { v4 as uuidv4 } from 'uuid';
 import {useParams} from "react-router-dom";
+import checkingDuplicatesAndNull from "../function/checkingDuplicatesAndNull.js";
 
 const Board = ({listID}) => {
     const { boardId } = useParams();
@@ -48,12 +49,10 @@ const Board = ({listID}) => {
     };
 
     const addList = () => {
-        if (element.trim() === "") {
-            alert("Введите дело!");
+        if(!checkingDuplicatesAndNull(element, arrayElements)){
             return;
         }
-
-        setArrayElements([...arrayElements, { id: uuidv4(), text: element, checked: false }]);
+        setArrayElements([...arrayElements, { id: uuidv4(), name: element, checked: false }]);
         setElement("");
     };
 
@@ -83,7 +82,7 @@ const Board = ({listID}) => {
                                     onChange={handleToggle(item.id)}
                                 />
                             </ListItemIcon>
-                            <ListItemText primary={item.text} />
+                            <ListItemText primary={item.name} />
                             <ListItemSecondaryAction>
                                 <IconButton edge="end" aria-label="delete" onClick={() => deleteElement(item.id)}>
                                     <DeleteIcon />
@@ -108,5 +107,4 @@ const Board = ({listID}) => {
         </Box>
     );
 };
-
 export default Board;

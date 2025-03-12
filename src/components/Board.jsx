@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
     TextField,
     List,
@@ -8,51 +8,30 @@ import {
     ListItemText,
     ListItemSecondaryAction,
     IconButton,
-    Box, Divider,
+    Box,
+    Divider,
 } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { v4 as uuidv4 } from 'uuid';
-import {useParams} from "react-router-dom";
 import checkingDuplicatesAndNull from "../function/checkingDuplicatesAndNull.js";
+import { Draggable, Droppable } from "react-beautiful-dnd";
 
-const Board = ({listID}) => {
-    const { boardId } = useParams();
+const Board = ({ listID, elements, setArrayList }) => {
 
     const [element, setElement] = useState("");
-    const [arrayElements, setArrayElements] = useState([])
-
-    const savedElements = localStorage.getItem(`elements_${boardId}${listID}`);
-
-    useEffect(() => {
-        if(savedElements) {
-            const parsedBoards = JSON.parse(savedElements);
-            setArrayElements(parsedBoards);
-        }
-    }, []);
-
-    useEffect(() => {
-        localStorage.setItem(`elements_${boardId}${listID}`, JSON.stringify(arrayElements));
-    }, [arrayElements, boardId]);
-
-
-    const deleteElement = (id) => {
-        setArrayElements(arrayElements.filter(item => item.id !== id));
-    };
-
-    const handleToggle = (id) => () => {
-        setArrayElements(arrayElements.map(item => {
-            if (item.id === id) {
-                return { ...item, checked: !item.checked }; // Инвертируем состояние checked
-            }
-            return item;
-        }));
-    };
 
     const addList = () => {
-        if(!checkingDuplicatesAndNull(element, arrayElements)){
+        if (!checkingDuplicatesAndNull(element, elements)) {
             return;
         }
-        setArrayElements([...arrayElements, { id: uuidv4(), name: element, checked: false }]);
+        const newElement = { id: uuidv4(), name: element, checked: false };
+        setArrayList((prev) =>
+            prev.map((list) =>
+                list.id === listID
+                    ? { ...list, elements: [...list.elements, newElement] }
+                    : list
+            )
+        );
         setElement("");
     };
 
@@ -62,37 +41,74 @@ const Board = ({listID}) => {
         }
     };
 
-    return (
-        <Box sx={{
-            width: '90%',
-        }}>
-            <List sx = {{
-                width: '100%',
-            }}>
-                {arrayElements.map((item) => (
-                    <Box key={item.id}>
-                        <ListItem>
+    const deleteElement = (id) => {
+        setArrayList((prev) =>
+            prev.map((list) =>
+                list.id === listID
+                    ? { ...list, elements: list.elements.filter((item) => item.id !== id) }
+                    : list
+            )
+        );
+    };
 
-                            <ListItemIcon>
-                                <Checkbox
-                                    edge="start"
-                                    checked={item.checked}
-                                    tabIndex={-1}
-                                    disableRipple
-                                    onChange={handleToggle(item.id)}
-                                />
-                            </ListItemIcon>
-                            <ListItemText primary={item.name} />
-                            <ListItemSecondaryAction>
-                                <IconButton edge="end" aria-label="delete" onClick={() => deleteElement(item.id)}>
-                                    <DeleteIcon />
-                                </IconButton>
-                            </ListItemSecondaryAction>
-                        </ListItem>
-                        <Divider />
-                    </Box>
-                ))}
-            </List>
+    const handleToggle = (id) => () => {
+        setArrayList((prev) =>
+            prev.map((list) =>
+                list.id === listID
+                    ? {
+                        ...list,
+                        elements: list.elements.map((item) =>
+                            item.id === id ? { ...item, checked: !item.checked } : item
+                        ),
+                    }
+                    : list
+            )
+        );
+    };
+
+    return (
+        <Box sx={{ width: '90%' }}>
+            <Droppable droppableId={listID}>
+                {(provided) => (
+                    <List
+                        ref={provided.innerRef}
+                        {...provided.droppableProps}
+                        sx={{ width: '100%' }}
+                    >
+                        {elements.map((item, index) => (
+                            <Draggable key={item.id} draggableId={item.id} index={index}>
+                                {(provided) => (
+                                    <Box
+                                        ref={provided.innerRef}
+                                        {...provided.draggableProps}
+                                        {...provided.dragHandleProps}
+                                    >
+                                        <ListItem>
+                                            <ListItemIcon>
+                                                <Checkbox
+                                                    edge="start"
+                                                    checked={item.checked}
+                                                    tabIndex={-1}
+                                                    disableRipple
+                                                    onChange={handleToggle(item.id)}
+                                                />
+                                            </ListItemIcon>
+                                            <ListItemText primary={item.name} />
+                                            <ListItemSecondaryAction>
+                                                <IconButton edge="end" aria-label="delete" onClick={() => deleteElement(item.id)}>
+                                                    <DeleteIcon />
+                                                </IconButton>
+                                            </ListItemSecondaryAction>
+                                        </ListItem>
+                                        <Divider />
+                                    </Box>
+                                )}
+                            </Draggable>
+                        ))}
+                        {provided.placeholder}
+                    </List>
+                )}
+            </Droppable>
 
             <TextField
                 value={element}
@@ -100,11 +116,10 @@ const Board = ({listID}) => {
                 onKeyDown={handleKeyEnter}
                 label="Введите задачу"
                 variant="outlined"
-                sx = {{
-                    width: '100%',
-                }}
+                sx={{ width: '100%' }}
             />
         </Box>
     );
 };
+
 export default Board;
